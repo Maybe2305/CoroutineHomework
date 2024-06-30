@@ -21,19 +21,20 @@ fun main() {
     with(CoroutineScope(EmptyCoroutineContext)) {
         launch {
             try {
-                val posts = getPosts(client)
+                val postWithAuthors = getPosts(client)
                     .map {
-                        PostWithCommentsAndAuthor(it, getComments(client, it.id), getAuthor(client, it.authorId))
+                        val author = getAuthor(client, it.authorId)
+                        PostWithComments(it, getComments(client, it.id), author.name)
                     }
 
-                println(posts)
+                println(postWithAuthors)
             } catch (e: Exception) {
                 e.printStackTrace()
             }
         }
     }
 
-    Thread.sleep(30_000L)
+    Thread.sleep(10_000L)
 }
 
 suspend fun OkHttpClient.apiCall(url: String): Response {
