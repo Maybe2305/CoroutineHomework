@@ -24,7 +24,7 @@ fun main() {
                 val postWithAuthors = getPosts(client)
                     .map {
                         val author = getAuthor(client, it.authorId)
-                        PostWithComments(it, getComments(client, it.id), author.name)
+                        PostWithComments(it.copy(author = author), getComments(client, it.id), author.name)
                     }
 
                 println(postWithAuthors)
@@ -65,7 +65,7 @@ suspend fun <T> makeRequest(url: String, client: OkHttpClient, typeToken: TypeTo
                     throw RuntimeException(response.message)
                 }
                 val body = response.body ?: throw RuntimeException("response body is null")
-                gson.fromJson(body.string(), typeToken.type)
+                    gson.fromJson(body.string(), typeToken.type)
             }
     }
 
